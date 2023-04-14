@@ -1,3 +1,5 @@
+# Problem Statement: Send a message to sub, sub returns HTTP status 500, message is retried n times as declared in retry policy... then the message is put on the Dead Letter Queue of format: dlq-{appId}-{topic}
+
 # Dapr runtime 1.10.5
 ### Retries Working and put on Dead Letter Queue successfully
 
@@ -22,6 +24,3 @@ But this worked:
     [HttpPost("/newcheckout")]
 ```
 Dapr handled the creation of the Dead Letter Topic (dlx-{{appId}}-{{topic}}) and by defalut the Dead Letter Queue(dlq-{{appId}}-{{topic}}) once the pubsub config had the setting `enableDeadLetter` set to `true`
-
-### Flow:
-Send a message to sub, sub returns HTTP status 500, message is retried n times as declared in retry policy... then the message is put on the Dead Letter Queue of format: dlq-{appId}-{topic}
