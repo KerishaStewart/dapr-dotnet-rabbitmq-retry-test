@@ -52,10 +52,20 @@ spec:
       pubsubRetry:
         policy: constant
         duration: 5s
+        maxRetries: 3
+
+      exponentialRetry:
+        policy: exponential
+        maxInterval: 10s
         maxRetries: 4
 
   targets:
-    apps:
-      # Want to use this or DefaultComponentInboundRetryPolicy
-      checkout:
-        retry: pubsubRetry
+    # apps:
+    #   # Want to use this or DefaultComponentInboundRetryPolicy
+    #   checkout:
+    #     retry: exponentialRetry
+
+    components:
+      pubsub:
+        inbound:
+          retry: pubsubRetry
