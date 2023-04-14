@@ -5,10 +5,6 @@ metadata:
 spec:
   type: pubsub.rabbitmq
   version: v1
-  template:
-    metadata:
-      annotations:
-        dapr.io/config: "featureconfig"
   metadata:
   - name: connectionString
     value: "amqp://guest:guest@localhost:5672"

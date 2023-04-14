@@ -23,8 +23,8 @@ public class OrderController : Controller
 
     // Programtic subscription
     //Subscribe to a topic 
-    //[Topic("pubsub", "newOrder")]
-    [Topic("pubsub", "newOrder", "ordersdlq", false)]
+    [Topic("pubsub", "newOrder")]
+    //[Topic("pubsub", "newOrder", "ordersdlq", false)]
     [HttpPost("/newcheckout")]
     public IActionResult GetCheckout([FromBody] Order order)
     {

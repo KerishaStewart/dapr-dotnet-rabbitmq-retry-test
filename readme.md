@@ -1,22 +1,27 @@
-# Dapr runtime 1.9.6, Dapr Cli 1.9.1
+# Dapr runtime 1.10.5
+### Retries Working and put on Dead Letter Queue successfully
+
 # Commands Used
 ## Subscriber
-### Retries Working - DLQ not working
-dapr run -a checkout --app-port 6046 -d ..\components_rabbitmq\ --config ..\components_rabbitmq\config.yaml  -- dotnet run
+dapr run -a checkout --app-port 6046 -d ..\components_rabbitmq\ -- dotnet run
 ## Publisher
-dapr run -a orderprocessing -H 3500 -d ..\components_rabbitmq\ --config ..\components_rabbitmq\config.yaml  -- dotnet run
-### Retries Working - DLQ Not Working
+dapr run -a orderprocessing -H 3500 -d ..\components_rabbitmq\  -- dotnet run
+
 ## docker rabbit mq
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 
-## What Subscriber Returns
-== APP == Subscriber triggered...
-== APP == Subscriber received : Shirt-B
-time="2023-04-13T23:38:35.7248234-04:00" level=warning msg="retriable error returned from app while processing pub/sub event e63232d1-c707-44f6-868b-639d6663ca83, topic: newOrder, body: {\"type\":\"https://tools.ietf.org/html/rfc7231#section-6.6.1\",\"title\":\"An error occurred while processing your request.\",\"status\":500,\"traceId\":\"00-a88cfa6e646dd71561e1af7477b91cec-71a941c57a1bce9a-01\"}. status code returned: 500" app_id=checkout instance=MD053 scope=dapr.runtime type=log ver=1.9.6
+# Notes
+Explicit declarations of the Dead Letter Topic did not work... for example:
+```
+    [Topic("pubsub", "newOrder", "ordersdlq", false)]
+    [HttpPost("/newcheckout")]
+```
+But this worked:
+```
+    [Topic("pubsub", "newOrder")]
+    [HttpPost("/newcheckout")]
+```
+Dapr handled the creation of the Dead Letter Topic (dlx-{{appId}}-{{topic}}) and by defalut the Dead Letter Queue(dlq-{{appId}}-{{topic}}) once the pubsub config had the setting `enableDeadLetter` set to `true`
 
-## Update
-Retries are currently working, failed message not put on dead letter queue topic
-
-
-# Dapr runtime 1.10
-In progress
+### Flow:
+Send a message to sub, sub returns HTTP status 500, message is retried n times as declared in retry policy... then the message is put on the Dead Letter Queue of format: dlq-{appId}-{topic}
