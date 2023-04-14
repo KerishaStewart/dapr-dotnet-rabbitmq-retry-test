@@ -1,8 +1,11 @@
+# Dapr runtime 1.9.6, Dapr Cli 1.9.1
 # Commands Used
 ## Subscriber
-dapr run -a checkout --app-port 6046 -d ..\components_rabbitmq\ -- dotnet run
+### Retries Working - DLQ not working
+dapr run -a checkout --app-port 6046 -d ..\components_rabbitmq\ --config ..\components_rabbitmq\config.yaml  -- dotnet run
 ## Publisher
-dapr run -a orderprocessing -H 3500 -d ..\components_rabbitmq\ -- dotnet run
+dapr run -a orderprocessing -H 3500 -d ..\components_rabbitmq\ --config ..\components_rabbitmq\config.yaml  -- dotnet run
+### Retries Working - DQL Not Working
 ## docker rabbit mq
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 
@@ -13,3 +16,7 @@ time="2023-04-13T23:38:35.7248234-04:00" level=warning msg="retriable error retu
 
 ## Update
 Retries are currently working, failed message not put on dead letter queue topic
+
+
+# Dapr runtime 1.10
+In progress
