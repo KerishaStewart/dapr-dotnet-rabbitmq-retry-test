@@ -1,0 +1,61 @@
+﻿apiVersion: dapr.io/v1alpha1
+kind: Resiliency
+metadata:
+  name: myresiliency
+spec:
+  policies:
+    retries:
+      # Global Retry Policy
+      DefaultRetryPolicy:
+        policy: constant
+        duration: 1s
+        maxRetries: 3
+      
+      # Global Retry Policy for Apps
+      DefaultAppRetryPolicy:
+        policy: constant
+        duration: 100ms
+        maxRetries: 5
+
+      # Global Retry Policy for Apps
+      DefaultActorRetryPolicy:
+        policy: exponential
+        maxInterval: 15s
+        maxRetries: 10
+
+      # Want to use this or pubsubRetry
+      # Global Retry Policy for Inbound Component operations
+      DefaultComponentInboundRetryPolicy:
+        policy: constant
+        duration: 5s
+        maxRetries: 5
+
+      # Global Retry Policy for Statestores
+      DefaultStatestoreComponentOutboundRetryPolicy:
+        policy: exponential
+        maxInterval: 60s
+        maxRetries: -1
+
+     # Named policy
+      fastRetries:
+        policy: constant
+        duration: 10ms
+        maxRetries: 3
+
+     # Named policy
+      retryForever:
+        policy: exponential
+        maxInterval: 10s
+        maxRetries: -1
+
+      # Named policy
+      pubsubRetry:
+        policy: constant
+        duration: 5s
+        maxRetries: 4
+
+  targets:
+    apps:
+      # Want to use this or DefaultComponentInboundRetryPolicy
+      checkout:
+        retry: pubsubRetry
